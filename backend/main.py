@@ -68,7 +68,7 @@ def get_employees():
 
 @app.post("/login")
 def login(request: LoginRequest):
-    sql = "SELECT * FROM admins WHERE username = %s AND password = %s"
+    sql = "SELECT * FROM admin WHERE username = %s AND password = %s"
     values = (request.username, request.password)
     cursor.execute(sql, values)
     admin = cursor.fetchone()
