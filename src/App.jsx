@@ -45,6 +45,7 @@ function App() {
   const [loginPassword, setLoginPassword] = useState("");
   const searchInputRef = useRef(null);
   const formRef = useRef(null);
+  const notificationTimeoutRef = useRef(null);
   const employeeNameRef = useRef(null);
   const emailRef = useRef(null);
   const salaryRef = useRef(null);
@@ -100,7 +101,11 @@ function App() {
     }
   }, [isLoggedIn]);
 
-  const showNotification = (message, type = "success") => {
+  const showNotification = (message, type = "success", duration = 3000) => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+
     if (type === "success") {
       setSuccessMessage(message);
       setErrorMessage("");
@@ -110,11 +115,12 @@ function App() {
     }
     setStatusType(type);
 
-    setTimeout(() => {
+    notificationTimeoutRef.current = setTimeout(() => {
       setSuccessMessage("");
       setErrorMessage("");
       setStatusType("");
-    }, 3000);
+      notificationTimeoutRef.current = null;
+    }, duration);
   };
 
   const fetchEmployees = () => {
@@ -262,7 +268,7 @@ function App() {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", loginUsername);
       setIsLoggedIn(true);
-      setSuccessMessage("Login successful.");
+      showNotification("Login successful.", "success", 2000);
       setActivePage("Dashboard");
       setLoginPassword("");
     } catch (error) {
@@ -990,16 +996,6 @@ function App() {
 
           {activePage === "Reports" && (
             <section className="reports-page">
-              <div className="reports-header">
-                <div>
-                  <h2>Reports</h2>
-                  <p>
-                    Manage payroll, employee records, leave calculations, and
-                    reports from a modern dashboard.
-                  </p>
-                </div>
-              </div>
-
               <div className="reports-summary-cards">
                 <article className="report-card report-summary-card report-summary-blue">
                   <div className="report-card-left">
