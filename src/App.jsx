@@ -16,6 +16,8 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 
+const API_BASE_URL = "http://127.0.0.1:8000";
+
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
 
@@ -127,7 +129,7 @@ function App() {
     setLoading(true);
 
     axios
-      .get("http://127.0.0.1:8000/employees")
+      .get(`${API_BASE_URL}/employees`)
       .then((response) => {
         setEmployees(response.data);
         setLoading(false);
@@ -179,11 +181,8 @@ function App() {
 
     const request =
       editingId === null
-        ? axios.post("http://127.0.0.1:8000/employees", employeeData)
-        : axios.put(
-            `http://127.0.0.1:8000/employees/${editingId}`,
-            employeeData,
-          );
+        ? axios.post(`${API_BASE_URL}/employees`, employeeData)
+        : axios.put(`${API_BASE_URL}/employees/${editingId}`, employeeData);
 
     request
       .then(() => {
@@ -209,7 +208,7 @@ function App() {
     }
 
     axios
-      .delete(`http://127.0.0.1:8000/employees/${id}`)
+      .delete(`${API_BASE_URL}/employees/${id}`)
       .then(() => {
         fetchEmployees();
         showNotification("Employee deleted successfully.", "success");
@@ -261,7 +260,7 @@ function App() {
     setSuccessMessage("");
 
     try {
-      await axios.post("http://127.0.0.1:8000/login", {
+      await axios.post(`${API_BASE_URL}/login`, {
         username: loginUsername,
         password: loginPassword,
       });
