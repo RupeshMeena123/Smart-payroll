@@ -72,8 +72,10 @@ def login(request: LoginRequest):
     values = (request.username, request.password)
     cursor.execute(sql, values)
     admin = cursor.fetchone()
+
     if not admin:
         raise HTTPException(status_code=401, detail="Invalid username or password")
+
     return {"message": "Login successful"}
 
 @app.post("/employees")
