@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import mysql.connector
@@ -33,6 +33,10 @@ class Employee(BaseModel):
     unpaid_leaves: int = 0
     holidays: int = 0
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
 @app.get("/")
 def home():
     return {"message": "Smart Payroll Backend Running"}
@@ -45,6 +49,16 @@ def get_employees():
     employees = cursor.fetchall()
 
     return employees
+
+@app.post("/login")
+def login(request: LoginRequest):
+    sql = "SELECT * FROM admins WHERE username = %s AND password = %s"
+    values = (request.username, request.password)
+    cursor.execute(sql, values)
+    admin = cursor.fetchone()
+    if not admin:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    return {"message": "Login successful"}
 
 @app.post("/employees")
 def add_employee(employee: Employee):
