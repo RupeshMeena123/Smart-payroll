@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import mysql.connector
 
 app = FastAPI()
@@ -21,6 +22,17 @@ db = mysql.connector.connect(
 
 cursor = db.cursor(dictionary=True)
 
+class Employee(BaseModel):
+    name: str
+    email: str
+    salary: int
+    position: str
+    overtime_hours: int = 0
+    bonus: int = 0
+    paid_leaves: int = 0
+    unpaid_leaves: int = 0
+    holidays: int = 0
+
 @app.get("/")
 def home():
     return {"message": "Smart Payroll Backend Running"}
@@ -35,22 +47,36 @@ def get_employees():
     return employees
 
 @app.post("/employees")
-def add_employee(employee: dict):
+def add_employee(employee: Employee):
 
     sql = """
-      INSERT INTO employees (name, email, salary, position)
-      VALUES (%s, %s, %s, %s)
+      INSERT INTO employees (
+        name,
+        email,
+        salary,
+        position,
+        overtime_hours,
+        bonus,
+        paid_leaves,
+        unpaid_leaves,
+        holidays
+      )
+      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
       """
 
     values = (
-     employee["name"],
-     employee["email"],
-     employee["salary"],
-     employee["position"]
+        employee.name,
+        employee.email,
+        employee.salary,
+        employee.position,
+        employee.overtime_hours,
+        employee.bonus,
+        employee.paid_leaves,
+        employee.unpaid_leaves,
+        employee.holidays,
     )
 
     cursor.execute(sql, values)
-
     db.commit()
 
     return {
@@ -74,23 +100,33 @@ def delete_employee(employee_id: int):
     }
 
 @app.put("/employees/{id}")
-def update_employee(id: int, employee: dict):
+def update_employee(id: int, employee: Employee):
 
     sql = """
     UPDATE employees
     SET name = %s,
         email = %s,
         salary = %s,
-        position = %s
+        position = %s,
+        overtime_hours = %s,
+        bonus = %s,
+        paid_leaves = %s,
+        unpaid_leaves = %s,
+        holidays = %s
     WHERE id = %s
     """
 
     values = (
-        employee["name"],
-        employee["email"],
-        employee["salary"],
-        employee["position"],
-        id
+        employee.name,
+        employee.email,
+        employee.salary,
+        employee.position,
+        employee.overtime_hours,
+        employee.bonus,
+        employee.paid_leaves,
+        employee.unpaid_leaves,
+        employee.holidays,
+        id,
     )
 
     cursor.execute(sql, values)

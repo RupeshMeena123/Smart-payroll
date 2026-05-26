@@ -1,26 +1,15 @@
-CREATE DATABASE smart_payroll;
-
+CREATE DATABASE IF NOT EXISTS smart_payroll;
 USE smart_payroll;
 
-CREATE TABLE employee (
-id INT PRIMARY KEY AUTO_INCREMENT,
-name VARCHAR(50)
+CREATE TABLE IF NOT EXISTS employees (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100),
+  email VARCHAR(100),
+  salary INT,
+  position VARCHAR(100),
+  overtime_hours INT DEFAULT 0,
+  bonus INT DEFAULT 0,
+  paid_leaves INT DEFAULT 0,
+  unpaid_leaves INT DEFAULT 0,
+  holidays INT DEFAULT 0
 );
-
-SELECT * FROM employee;
-
-USE smart_payroll;
-
-SHOW TABLES;
-
-RENAME TABLE employee TO employees;
-
-SELECT * FROM employees;
-
-ALTER TABLE employees
-MODIFY name VARCHAR(100);
-
-ALTER TABLE employees
-ADD email VARCHAR(100),
-ADD salary INT,
-ADD position VARCHAR(100);
