@@ -16,7 +16,7 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 
-const API_BASE_URL = "smart-payroll-production.up.railway.app";
+const API_BASE_URL = "https://smart-payroll-production.up.railway.app";
 
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
