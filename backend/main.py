@@ -64,6 +64,26 @@ db = mysql.connector.connect(
 
 cursor = db.cursor(dictionary=True)
 
+# Ensure the employees table exists in the deployed database.
+# This is a minimal safe startup fix for missing schema on Render/Clever Cloud.
+cursor.execute(
+    """
+    CREATE TABLE IF NOT EXISTS employees (
+      id INT PRIMARY KEY AUTO_INCREMENT,
+      name VARCHAR(100),
+      email VARCHAR(100),
+      salary INT,
+      position VARCHAR(100),
+      overtime_hours INT DEFAULT 0,
+      bonus INT DEFAULT 0,
+      paid_leaves INT DEFAULT 0,
+      unpaid_leaves INT DEFAULT 0,
+      holidays INT DEFAULT 0
+    )
+    """
+)
+db.commit()
+
 class Employee(BaseModel):
     name: str
     email: str
