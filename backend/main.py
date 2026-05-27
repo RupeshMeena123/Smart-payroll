@@ -14,6 +14,7 @@ allowed_origins = [
     "http://127.0.0.1:3000",
     "http://localhost",
     "http://127.0.0.1",
+    "https://smart-payroll.vercel.app",
 ]
 
 frontend_url = os.getenv("FRONTEND_URL")
