@@ -14,25 +14,32 @@ allowed_origins = [
     "http://127.0.0.1:3000",
     "http://localhost",
     "http://127.0.0.1",
-    "https://smart-payroll.vercel.app",
 ]
 
 frontend_url = os.getenv("FRONTEND_URL")
-
 if frontend_url:
     allowed_origins.append(frontend_url)
 
-# Allow all Vercel preview deployments
+# Production-safe: allow the main Vercel production domain plus all Vercel preview deployments.
 allowed_origins_regex = r"https://.*\.vercel\.app"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origin_regex=allowed_origins_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def log_cors_origin(request, call_next):
+    origin = request.headers.get("origin")
+    if origin:
+        print(f"[CORS] Origin: {origin}")
+        print(f"[CORS] Allowed origins: {allowed_origins}")
+        print(f"[CORS] Allowed regex: {allowed_origins_regex}")
+    return await call_next(request)
 
 
 from urllib.parse import urlparse
