@@ -274,9 +274,11 @@ function App() {
       setLoginPassword("");
     } catch (error) {
       console.error(error);
-      setErrorMessage(
-        error.response?.data?.detail || "Invalid username or password.",
-      );
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.message ||
+        "Invalid username or password.";
+      setErrorMessage(errorMessage);
       setStatusType("error");
     }
   };
