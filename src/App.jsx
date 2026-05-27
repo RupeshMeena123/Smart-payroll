@@ -23,6 +23,8 @@ const API_BASE_URL =
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
 
+  console.log("API_BASE_URL", API_BASE_URL);
+
   const [employees, setEmployees] = useState([]);
   const [employeeName, setEmployeeName] = useState("");
   const [email, setEmail] = useState("");
@@ -129,15 +131,20 @@ function App() {
 
   const fetchEmployees = () => {
     setLoading(true);
+    console.log("fetchEmployees -> URL", `${API_BASE_URL}/employees`);
 
     axios
       .get(`${API_BASE_URL}/employees`)
       .then((response) => {
+        console.log("fetchEmployees response", response.data);
         setEmployees(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
+        console.error(
+          "fetchEmployees error",
+          error.response?.data || error.message || error,
+        );
         setLoading(false);
         showNotification(
           "Unable to load employees. Please check the backend.",
@@ -181,13 +188,16 @@ function App() {
       holidays: Number(holidays) || 0,
     };
 
+    console.log("addEmployee payload", employeeData);
+
     const request =
       editingId === null
         ? axios.post(`${API_BASE_URL}/employees`, employeeData)
         : axios.put(`${API_BASE_URL}/employees/${editingId}`, employeeData);
 
     request
-      .then(() => {
+      .then((response) => {
+        console.log("addEmployee response", response.data);
         fetchEmployees();
         clearForm();
         showNotification(
@@ -199,7 +209,10 @@ function App() {
         setActivePage("Employees");
       })
       .catch((error) => {
-        console.error(error);
+        console.error(
+          "addEmployee error",
+          error.response?.data || error.message || error,
+        );
         showNotification("Unable to save employee. Please try again.", "error");
       });
   };
