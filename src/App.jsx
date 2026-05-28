@@ -17,8 +17,8 @@ import {
 } from "react-icons/fa";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL?.replace(/\/+$/, "") ||
-  "https://smart-payroll-production.up.railway.app";
+  import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "") ||
+  "https://smart-payroll.onrender.com";
 
 function App() {
   const [activePage, setActivePage] = useState("Dashboard");
